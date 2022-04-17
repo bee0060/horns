@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Horns</title>
+</head>
+<style>
+  body {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    height: 90vh;
+    justify-content: center;
+  }
+
+  select {
+    font-size: 20px;
+    padding: 10px 5px;
+    position: absolute;
+    top: 22vh;
+  }
+
+  .mask {
+    background-color: gray;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    position: absolute;
+    width: 100%;
+    z-index: 100;
+  }
+
+  .play {
+    align-items: center;
+    border: 2px solid darkolivegreen;
+    border-radius: 50%;
+    display: flex;
+    flex: 0 0 auto;
+    height: 150px;
+    justify-content: center;
+    user-select: none;
+    width: 150px;
+  }
+
+  .play.active {
+    background-color: darkseagreen;
+    opacity: 0.8;
+  }
+</style>
+
+<body>
+  <div class="mask" onclick="this.remove()"><span>点我开始</span></div>
+  <select name="selVoice" id="selVoice" value="car-short" onchange="changeVoice()">
+    <option value="car-short">car-short</option>
+    <option value="car">car</option>
+    <option value="motorcycle">motorcycle</option>
+    <option value="truck">truck</option>
+  </select>
+  <button id="btnPlay" class="play">按喇叭</button>
+  <audio preload="metadata" src="resources/car-short.mp3" type="audio/mpeg">
+  </audio>
+  <script>
+    const btnPlay = document.querySelector('#btnPlay')
+    let playing = false
+
+    function changeVoice() {
+      const audio = document.querySelector('audio')
+      const selVoice = document.querySelector('#selVoice')
+      audio.autoplay = false
+      audio.src = `resources/${selVoice.value}.mp3`
+      console.log("changeVoice -> audio", audio)
+    }
+
+    function start() {
+      console.log("start -> start")
+      const audio = document.querySelector('audio')
+      audio.loop = true
+      btnPlay.classList.add('active')
+      audio.currentTime = 0.04
+      audio.play()
+    }
+
+    function stop() {
+      console.log("stop -> stop")
+      const audio = document.querySelector('audio')
+      audio.loop = false
+      audio.pause()
+      btnPlay.classList.remove('active')
+      preventDefault();
+    }
+
+    function preventDefault() {
+      window.event.stopPropagation()
+      window.event.preventDefault()
+    }
+
+    function checkIsMobile(ua) {
+      if (/Mobi|Android/i.test(ua)) {
+        return true;
+      }
+      return false;
+    }
+
+    function registerButtonEvent() {
+      const isMobile = checkIsMobile(navigator.userAgent)
+      const btnPlay = document.querySelector('#btnPlay')
+      const startEventName = isMobile ? 'touchstart' : 'mousedown'
+      const endEventName = isMobile ? 'touchend' : 'mouseup'
+
+      btnPlay.addEventListener(startEventName, start)
+      btnPlay.addEventListener(endEventName, stop)
+    }
+    window.onload = function () {
+      registerButtonEvent()
+    }
+  </script>
+</body>
+
+</html>
