@@ -83,6 +83,8 @@
       btnPlay.classList.add('active')
       audio.currentTime = 0.04
       audio.play()
+      preventDefault()
+      return false
     }
 
     function stop() {
@@ -92,6 +94,7 @@
       audio.pause()
       btnPlay.classList.remove('active')
       preventDefault();
+      return false
     }
 
     function preventDefault() {
