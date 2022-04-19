@@ -14,13 +14,14 @@
     flex-direction: column;
     height: 90vh;
     justify-content: center;
+    user-select: none;
   }
 
   select {
     font-size: 20px;
     padding: 10px 5px;
     position: absolute;
-    top: 22vh;
+    top: 18vh;
   }
 
   .mask {
@@ -51,6 +52,11 @@
     background-color: darkseagreen;
     opacity: 0.8;
   }
+
+  .mode-container {
+    position: absolute;
+    bottom: 15vh
+  }
 </style>
 
 <body>
@@ -60,14 +66,21 @@
     <option value="car-short">小车1</option>
     <option value="car">小车2</option>
     <option value="truck">卡车</option>
+    <option value="suona">唢呐</option>
     <option value="duck">橡皮鸭</option>
   </select>
   <button id="btnPlay" class="play">按喇叭</button>
+  <div class="mode-container">
+    <label for="click-mode">
+      <input id="click-mode" type="checkbox" onclick="toggleMode()">点击模式
+    </label>
+  </div>
   <audio preload="metadata" loop="true" src="resources/motorcycle.mp3" type="audio/mpeg">
   </audio>
   <script>
     const btnPlay = document.querySelector('#btnPlay')
     let playing = false
+    let isClickMode = false
 
     function changeVoice() {
       const audio = document.querySelector('audio')
@@ -77,12 +90,39 @@
       console.log("changeVoice -> audio", audio)
     }
 
+    function toggleMode() {
+      const event = window.event;
+      const target = event.target;
+      isClickMode = target.checked;
+    }
+
+    function mouseDown() {
+      if (!isClickMode) {
+        start()
+        return
+      }
+
+      if (playing) {
+        stop()
+      } else {
+        start()
+      }
+    }
+
+    function mouseUp() {
+      if (isClickMode) {
+        return
+      }
+      stop()
+    }
+
     function start() {
       console.log("start -> start")
       const audio = document.querySelector('audio')
       btnPlay.classList.add('active')
       audio.currentTime = 0
       audio.play()
+      playing = true
       preventDefault()
       return false
     }
@@ -92,6 +132,7 @@
       const audio = document.querySelector('audio')
       audio.pause()
       btnPlay.classList.remove('active')
+      playing = false
       preventDefault();
       return false
     }
@@ -114,8 +155,8 @@
       const startEventName = isMobile ? 'touchstart' : 'mousedown'
       const endEventName = isMobile ? 'touchend' : 'mouseup'
 
-      btnPlay.addEventListener(startEventName, start)
-      btnPlay.addEventListener(endEventName, stop)
+      btnPlay.addEventListener(startEventName, mouseDown)
+      btnPlay.addEventListener(endEventName, mouseUp)
     }
     window.onload = function () {
       registerButtonEvent()
