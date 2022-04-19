@@ -55,14 +55,15 @@
 
 <body>
   <div class="mask" onclick="this.remove()"><span>点我开始</span></div>
-  <select name="selVoice" id="selVoice" value="car-short" onchange="changeVoice()">
-    <option value="car-short">car-short</option>
-    <option value="car">car</option>
-    <option value="motorcycle">motorcycle</option>
-    <option value="truck">truck</option>
+  <select name="selVoice" id="selVoice" value="motorcycle" onchange="changeVoice()">
+    <option value="motorcycle">电动车</option>
+    <option value="car-short">小车1</option>
+    <option value="car">小车2</option>
+    <option value="truck">卡车</option>
+    <option value="duck">橡皮鸭</option>
   </select>
   <button id="btnPlay" class="play">按喇叭</button>
-  <audio preload="metadata" src="resources/car-short.mp3" type="audio/mpeg">
+  <audio preload="metadata" loop="true" src="resources/motorcycle.mp3" type="audio/mpeg">
   </audio>
   <script>
     const btnPlay = document.querySelector('#btnPlay')
@@ -79,9 +80,8 @@
     function start() {
       console.log("start -> start")
       const audio = document.querySelector('audio')
-      audio.loop = true
       btnPlay.classList.add('active')
-      audio.currentTime = 0.04
+      audio.currentTime = 0
       audio.play()
       preventDefault()
       return false
@@ -90,7 +90,6 @@
     function stop() {
       console.log("stop -> stop")
       const audio = document.querySelector('audio')
-      audio.loop = false
       audio.pause()
       btnPlay.classList.remove('active')
       preventDefault();
